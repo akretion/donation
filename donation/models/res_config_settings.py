@@ -15,9 +15,9 @@ class ResConfigSettings(models.TransientModel):
         related="company_id.donation_account_id",
         readonly=False,
         domain="[('reconcile', '=', True), ('deprecated', '=', False), "
-        "('company_id', '=', company_id), ('account_type', '=', 'asset_current')]",
+        "('company_ids', 'in', company_id), ('account_type', '=', 'asset_current')]",
     )
     group_donation_check_total = fields.Boolean(
         string="Check Total on Donations",
-        implied_group="donation.group_donation_check_total",
+        implied_group="group_donation_check_total",
     )

@@ -5,9 +5,9 @@
 from odoo import SUPERUSER_ID, api
 
 
-def update_account_payment_mode(cr, registry):
-    env = api.Environment(cr, SUPERUSER_ID, {})
-    modes = env["account.payment.mode"].search(
-        [("payment_type", "=", "inbound"), ("bank_account_link", "=", "fixed")]
+def update_account_payment_method_line(cr):
+    env = api.Environment(cr.cr, SUPERUSER_ID, {})
+    modes = env["account.payment.method.line"].search(
+        [("payment_type", "=", "inbound")]
     )
     modes.write({"donation": True})
