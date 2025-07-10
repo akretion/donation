@@ -17,7 +17,7 @@ class DonationCampaign(models.Model):
         for camp in self:
             name = camp.name
             if camp.code:
-                name = "[%s] %s" % (camp.code, name)
+                name = "[{}] {}".format(camp.code, name)
             res.append((camp.id, name))
         return res
 
