@@ -13,7 +13,6 @@
     "website": "https://github.com/OCA/donation",
     "depends": [
         "donation_base",
-        "account_payment_base_oca",
     ],
     "data": [
         "security/donation_security.xml",
@@ -36,5 +35,4 @@
     "post_init_hook": "update_account_payment_method_line",
     "demo": ["demo/donation_demo.xml"],
     "installable": True,
-    "excludes": "donation",
 }

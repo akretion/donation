@@ -263,8 +263,10 @@ class DonationDonation(models.Model):
         else:
             if not company.account_journal_payment_debit_account_id:
                 raise UserError(
-                    _("Missing Outstanding Receipts Account on company '%s'.")
-                    % company.display_name
+                    _(
+                        "Missing Outstanding Receipts Account"
+                        f"on company '{company.display_name}'."
+                    )
                 )
             payment_method = self.payment_method_line_id.payment_method_id
             account_id = (
@@ -492,7 +494,7 @@ class DonationDonation(models.Model):
             ):
                 mlines_to_reconcile |= donation_mline
                 logger.info(
-                    "Found donation move line to reconcile ID=%d" % donation_mline.id
+                    f"Found donation move line to reconcile ID={donation_mline.id}"
                 )
                 break
         for statement_mline in self.bank_statement_line_id.move_id.line_ids:
@@ -667,12 +669,12 @@ class DonationLine(models.Model):
     product_id = fields.Many2one(
         "product.product",
         required=True,
-        domain=[("service_tracking", "like", "donation")],
+        domain=[("is_donation", "=", True)],
         ondelete="restrict",
         check_company=True,
     )
-    product_service_tracking = fields.Selection(
-        related="product_id.service_tracking", store=True, string="Product Type"
+    product_is_donation = fields.Boolean(
+        related="product_id.is_donation", store=True, string="Product Type donation"
     )
     quantity = fields.Integer(default=1)
     unit_price = fields.Monetary(currency_field="currency_id")
@@ -701,21 +703,6 @@ class DonationLine(models.Model):
         related="product_id.tax_receipt_ok",
         store=True,
     )
-    in_kind = fields.Boolean(
-        compute="_compute_in_kind",
-        store=True,
-    )
-
-    @api.depends("product_id")
-    def _compute_in_kind(self):
-        for line in self:
-            in_kind = False
-            if (
-                line.product_id.service_tracking
-                and line.product_id.service_tracking.startswith("donation_in_kind")
-            ):
-                in_kind = True
-            line.in_kind = in_kind
 
     @api.depends(
         "unit_price",

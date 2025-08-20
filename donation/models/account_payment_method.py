@@ -23,15 +23,3 @@ class AccountPaymentMode(models.Model):
                         "is not an inbound payment mode."
                     )
                 )
-            if mode.donation and mode.bank_account_link != "fixed":
-                raise ValidationError(
-                    _(
-                        f"Donation payment mode '{mode.names}' must be configured with "
-                        "'Link to Bank Account' set to 'Fixed'."
-                    )
-                )
-
-    @api.onchange("donation")
-    def donation_change(self):
-        if self.donation and self.bank_account_link != "fixed":
-            self.bank_account_link = "fixed"

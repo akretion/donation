@@ -16,9 +16,7 @@ class DonationReport(models.Model):
 
     donation_date = fields.Date(readonly=True)
     product_id = fields.Many2one("product.product", readonly=True)
-    product_service_tracking = fields.Selection(
-        related="product_id.service_tracking", store=True
-    )
+    product_is_donation = fields.Boolean(related="product_id.is_donation", store=True)
     partner_id = fields.Many2one("res.partner", "Donor", readonly=True)
     country_id = fields.Many2one("res.country", "Partner Country", readonly=True)
     company_id = fields.Many2one("res.company", readonly=True)
@@ -35,7 +33,6 @@ class DonationReport(models.Model):
     thanks_template_id = fields.Many2one(
         "donation.thanks.template", string="Thanks Template", readonly=True
     )
-    in_kind = fields.Boolean()
     tax_receipt_ok = fields.Boolean("Eligible for a Tax Receipt")
     company_currency_id = fields.Many2one("res.currency", readonly=True)
     amount_company_currency = fields.Monetary(
@@ -53,8 +50,7 @@ class DonationReport(models.Model):
             SELECT min(l.id) AS id,
                 d.donation_date,
                 l.product_id,
-                l.product_service_tracking,
-                l.in_kind,
+                l.product_is_donation,
                 l.tax_receipt_ok,
                 pt.categ_id AS product_categ_id,
                 d.company_id,
@@ -91,8 +87,7 @@ class DonationReport(models.Model):
         return sql.SQL(
             """
             GROUP BY l.product_id,
-                l.product_service_tracking,
-                l.in_kind,
+                l.product_is_donation,
                 l.tax_receipt_ok,
                 pt.categ_id,
                 d.donation_date,

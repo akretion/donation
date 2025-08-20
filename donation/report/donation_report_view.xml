@@ -46,19 +46,14 @@
                         context="{'group_by': 'product_id'}"
                     />
                     <filter
-                        name="product_service_tracking_groupby"
-                        string="Product Type"
-                        context="{'group_by': 'product_service_tracking'}"
+                        name="product_is_donation"
+                        string="Product Type donation"
+                        context="{'group_by': 'product_is_donation'}"
                     />
                     <filter
                         name="tax_receipt_ok_groupby"
                         string="Eligible for a Tax Receipt"
                         context="{'group_by': 'tax_receipt_ok'}"
-                    />
-                    <filter
-                        name="in_kind_groupby"
-                        string="In Kind"
-                        context="{'group_by': 'in_kind'}"
                     />
                     <filter
                         name="campaign_groupby"
@@ -108,9 +103,8 @@
                 <field name="campaign_id" optional="hide" />
                 <field name="product_categ_id" optional="hide" />
                 <field name="product_id" optional="show" />
-                <field name="product_service_tracking" optional="hide" />
+                <field name="product_is_donation" optional="hide" />
                 <field name="tax_receipt_ok" optional="show" />
-                <field name="in_kind" optional="show" />
                 <field name="thanks_printed" optional="hide" />
                 <field name="thanks_template_id" optional="hide" />
                 <field name="tax_receipt_amount" sum="1" optional="show" />

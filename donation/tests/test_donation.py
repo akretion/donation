@@ -33,9 +33,6 @@ class TestDonation(TransactionCase):
         )
         today = time.strftime("%Y-%m-%d")
         self.product = self.env.ref("donation_base.product_product_donation")
-        self.inkind_product = self.env.ref(
-            "donation_base.product_product_inkind_donation"
-        )
         self.ddo = self.env["donation.donation"]
         self.donor1 = self.env.ref("donation_base.donor1")
         self.donor2 = self.env.ref("donation_base.donor2")
@@ -113,7 +110,7 @@ class TestDonation(TransactionCase):
                         0,
                         0,
                         {
-                            "product_id": self.inkind_product.id,
+                            "product_id": self.product.id,
                             "quantity": 1,
                             "unit_price": 1000,
                         },
@@ -133,7 +130,7 @@ class TestDonation(TransactionCase):
                         0,
                         0,
                         {
-                            "product_id": self.inkind_product.id,
+                            "product_id": self.product.id,
                             "quantity": 1,
                             "unit_price": 800,
                         },
@@ -157,7 +154,7 @@ class TestDonation(TransactionCase):
             self.assertEqual(donation.state, "draft")
             donation.validate()
             self.assertEqual(donation.state, "done")
-            if donation == self.don4:  # full in-kind donation
+            if donation == self.don4:
                 self.assertFalse(donation.move_id)
             else:
                 self.assertEqual(donation.move_id.state, "posted")
@@ -188,7 +185,7 @@ class TestDonation(TransactionCase):
                         0,
                         0,
                         {
-                            "product_id": self.inkind_product.id,
+                            "product_id": self.product.id,
                             "quantity": 1,
                             "unit_price": 1000,
                         },
@@ -270,7 +267,7 @@ class TestDonation(TransactionCase):
                         0,
                         0,
                         {
-                            "product_id": self.inkind_product.id,
+                            "product_id": self.product.id,
                             "quantity": 1,
                             "unit_price": 1000,
                         },
