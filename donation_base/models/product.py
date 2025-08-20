@@ -10,10 +10,13 @@ from odoo.exceptions import ValidationError
 class ProductTemplate(models.Model):
     _inherit = "product.template"
 
-    is_donation = fields.Boolean(
+    is_donation = fields.Selection(
+        selection=[
+            ("donation", "Donation"),
+            ("donation_in_kind_service", "In-Kind Donation Service"),
+        ],
         string="Is a donation",
         readonly=False,
-        default=False,
         help="Specify if the product is a donation",
     )
     tax_receipt_ok = fields.Boolean(
