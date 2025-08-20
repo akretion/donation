@@ -10,28 +10,12 @@ from odoo.exceptions import ValidationError
 class ProductTemplate(models.Model):
     _inherit = "product.template"
 
-    service_tracking = fields.Selection(
-        selection_add=[
-            ("donation", "Donation"),
-            ("donation_in_kind_service", "In-Kind Donation Service"),
-        ],
-        ondelete={
-            "donation": "set default",
-            "donation_in_kind_service": "set default",
-        },
+    is_donation = fields.Boolean(
+        string="Is a donation",
+        readonly=False,
+        default=False,
+        help="Specify if the product is a donation",
     )
-    # service_tracking = fields.Selection(
-    #     selection_add=[
-    #         ("donation", "Donation"),
-    #         ("donation_in_kind_consu", "In-Kind Donation Consummable"),
-    #         ("donation_in_kind_service", "In-Kind Donation Service"),
-    #     ],
-    #     ondelete={
-    #         "donation": "set service",
-    #         "donation_in_kind_consu": "set consu",
-    #         "donation_in_kind_service": "set service",
-    #     },
-    # )
     tax_receipt_ok = fields.Boolean(
         string="Is Eligible for a Tax Receipt",
         tracking=True,
@@ -42,23 +26,21 @@ class ProductTemplate(models.Model):
         help="Specify if the product is eligible for a tax receipt",
     )
 
-    @api.depends("service_tracking")
+    @api.depends("is_donation")
     def _compute_tax_receipt_ok(self):
         for product in self:
-            if product.service_tracking and not product.service_tracking.startswith(
-                "donation"
-            ):
+            if not product.is_donation:
                 product.tax_receipt_ok = False
 
-    @api.onchange("service_tracking")
+    @api.onchange("is_donation")
     def _donation_change(self):
         for product in self:
-            if product.service_tracking == "donation":
+            if product.donation:
                 product.taxes_id = False
                 product.supplier_taxes_id = False
                 product.purchase_ok = False
 
-    @api.constrains("service_tracking", "taxes_id")
+    @api.constrains("is_donation", "taxes_id")
     def donation_check(self):
         for product in self:
             # The check below is to make sure that we don't forget to remove
@@ -66,7 +48,7 @@ class ProductTemplate(models.Model):
             # for users of donation_sale. If there are countries that have
             # sale tax on donations (!), please tell us and we can remove this
             # constraint
-            if product.service_tracking == "donation" and product.taxes_id:
+            if product.is_donation and product.taxes_id:
                 raise ValidationError(
                     _(
                         "There shouldn't have any Customer Taxes on the "
@@ -75,17 +57,14 @@ class ProductTemplate(models.Model):
                     % product.display_name
                 )
 
-    def _service_tracking_blacklist(self):
-        return super()._service_tracking_blacklist() + ["donation"]
-
 
 class ProductProduct(models.Model):
     _inherit = "product.product"
 
-    @api.onchange("service_tracking")
+    @api.onchange("is_donation")
     def _donation_change(self):
         for product in self:
-            if product.service_tracking == "donation":
+            if product.is_donation:
                 product.taxes_id = False
                 product.supplier_taxes_id = False
                 product.purchase_ok = False
