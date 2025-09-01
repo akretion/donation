@@ -15,7 +15,7 @@
                 <filter
                     name="filter_donation"
                     string="Donation"
-                    domain="[('service_tracking', 'in', ('donation', 'donation_in_kind_consu', 'donation_in_kind_service'))]"
+                    domain="[('is_donation', '!=', False)]"
                 />
             </filter>
             <filter name="filter_to_purchase" position="after">
@@ -34,10 +34,8 @@
         <field name="arch" type="xml">
             <field name="service_tracking" position="after">
                 <!-- unfortunately, Odoo doesn't accept 'not like' in attrs -->
-                <field
-                    name="tax_receipt_ok"
-                    invisible="service_tracking != 'donation'"
-                />
+                <field name="is_donation" invisible="type == 'service'" />
+                <field name="tax_receipt_ok" invisible="not is_donation" />
             </field>
         </field>
     </record>
