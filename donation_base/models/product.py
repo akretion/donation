@@ -38,7 +38,7 @@ class ProductTemplate(models.Model):
     @api.onchange("is_donation")
     def _donation_change(self):
         for product in self:
-            if product.donation:
+            if product.is_donation:
                 product.taxes_id = False
                 product.supplier_taxes_id = False
                 product.purchase_ok = False
