@@ -19,18 +19,6 @@ class ProductTemplate(models.Model):
         readonly=False,
         help="Specify if the product is a donation",
     )
-    # service_tracking = fields.Selection(
-    #     selection_add=[
-    #         ("donation", "Donation"),
-    #         ("donation_in_kind_consu", "In-Kind Donation Consummable"),
-    #         ("donation_in_kind_service", "In-Kind Donation Service"),
-    #     ],
-    #     ondelete={
-    #         "donation": "set service",
-    #         "donation_in_kind_consu": "set consu",
-    #         "donation_in_kind_service": "set service",
-    #     },
-    # )
     tax_receipt_ok = fields.Boolean(
         string="Is Eligible for a Tax Receipt",
         tracking=True,
@@ -71,9 +59,6 @@ class ProductTemplate(models.Model):
                     )
                     % product.display_name
                 )
-
-    def _service_tracking_blacklist(self):
-        return super()._service_tracking_blacklist() + ["donation"]
 
 
 class ProductProduct(models.Model):
