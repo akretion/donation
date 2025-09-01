@@ -24,10 +24,9 @@ class AccountBankStatementLine(models.Model):
         if not self.partner_id:
             raise UserError(
                 _(
-                    "On bank statement line '%s', the partner is required to "
-                    "process a donation."
+                    f"On bank statement line '{self.display_name}',"
+                    "the partner is required to process a donation."
                 )
-                % self.display_name
             )
         if self.currency_id.compare_amounts(self.amount, 0) <= 0:
             raise UserError(
@@ -41,20 +40,19 @@ class AccountBankStatementLine(models.Model):
         if not self.company_id.donation_account_id:
             raise UserError(
                 _(
-                    "The Donation by Credit Transfer Account is not set for "
-                    "company '%s'."
+                    "The Donation by Credit Transfer Account"
+                    f"is not set for company '{self.company_id.display_name}'."
                 )
-                % self.company_id.display_name
             )
 
     def _get_payment_mode_donation(self):
         self.ensure_one()
-        payment_mode = self.env["account.payment.mode"].search(
+        payment_mode = self.env["account.payment.method.line"].search(
             [
                 ("company_id", "=", self.company_id.id),
                 ("payment_type", "=", "inbound"),
                 ("bank_account_link", "=", "fixed"),
-                ("fixed_journal_id", "=", self.journal_id.id),
+                ("journal_id", "=", self.journal_id.id),
             ],
             limit=1,
         )
@@ -74,10 +72,9 @@ class AccountBankStatementLine(models.Model):
         if not product:
             raise UserError(
                 _(
-                    "Missing Product for Donations via Credit Transfer "
-                    "for company '%s'."
+                    "Missing Product for Donations via Credit Transferi"
+                    f"for company '{self.company_id.display_name}'."
                 )
-                % self.company_id.display_name
             )
         return product
 
@@ -88,7 +85,7 @@ class AccountBankStatementLine(models.Model):
             "default_company_id": self.company_id.id,
             "default_partner_id": self.partner_id.id,
             "default_currency_id": self.currency_id.id,
-            "default_payment_mode_id": self._get_payment_mode_donation().id,
+            "default_payment_method_line_id": self._get_payment_mode_donation().id,
             "default_payment_ref": self.payment_ref,
             "default_donation_date": self.date,
             "default_bank_statement_line_id": self.id,

@@ -19,5 +19,5 @@ class ResConfigSettings(models.TransientModel):
     )
     group_donation_check_total = fields.Boolean(
         string="Check Total on Donations",
-        implied_group="donation.group_donation_check_total",
+        implied_group="group_donation_check_total",
     )

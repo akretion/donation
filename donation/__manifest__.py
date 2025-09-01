@@ -11,7 +11,9 @@
     "author": "Barroux Abbey, Akretion, Odoo Community Association (OCA)",
     "maintainers": ["alexis-via"],
     "website": "https://github.com/OCA/donation",
-    "depends": ["donation_base", "account_payment_mode"],
+    "depends": [
+        "donation_base",
+    ],
     "data": [
         "security/donation_security.xml",
         "security/ir.model.access.csv",
@@ -30,7 +32,7 @@
         "report/donation_thanks_view.xml",
         "report/donation_thanks_report.xml",
     ],
-    "post_init_hook": "update_account_payment_mode",
+    "post_init_hook": "update_account_payment_method_line",
     "demo": ["demo/donation_demo.xml"],
     "installable": True,
 }
