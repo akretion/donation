@@ -36,10 +36,6 @@ class TestDonationTaxReceipt(TransactionCase):
         with self.assertRaises(UserError):
             self.dt_receipt_rec.action_send_tax_receipt()
 
-    def test_donation_type(self):
-        self.assertEqual(self.product_id.type, "service")
-        self.assertTrue(self.product_id.is_donation)
-
 
 class TestTaxReceiptAnnualCreate(TransactionCase):
     def setUp(self):

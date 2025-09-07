@@ -596,6 +596,14 @@ msgstr ""
 "dürfen keine Steuern definiert werden."
 
 #. module: donation_base
+#. odoo-python
+#: code:addons/donation_base/models/product.py:0
+#, python-format
+msgid "There shouldn't have any Customer Taxes on the donation product '%s'."
+msgstr ""
+"Ein Spendenprodukt des Typs '%s' ist immer eine Sachspende"
+
+#. module: donation_base
 #: model_terms:product.template,description:donation_base.product_product_donation_product_template
 #: model_terms:product.template,description:donation_base.product_product_inkind_donation_product_template
 msgid "This donation item is eligible for a tax receipt."

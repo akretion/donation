@@ -632,6 +632,14 @@ msgstr ""
 "No debería haber ningún Impuesto al Cliente en el producto de donación '%s'."
 
 #. module: donation_base
+#. odoo-python
+#: code:addons/donation_base/models/product.py:0
+#, python-format
+msgid "A donation product of type '%s' is always an in-kind donation"
+msgstr ""
+"Un producto de donación de tipo '%s' es siempre una donación en especie"
+
+#. module: donation_base
 #: model_terms:product.template,description:donation_base.product_product_donation_product_template
 #: model_terms:product.template,description:donation_base.product_product_inkind_donation_product_template
 msgid "This donation item is eligible for a tax receipt."

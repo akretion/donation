@@ -51,6 +51,7 @@ class DonationTaxReceipt(models.Model):
         [("each", "One-Time Tax Receipt"), ("annual", "Annual Tax Receipt")],
         required=True,
         tracking=True,
+        readonly=True,
     )
 
     @api.model_create_multi
