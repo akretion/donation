@@ -9,7 +9,6 @@
     <!-- This is just a very basic tax receipt report
     You should customize the style and layout in a custom module -->
     <template id="donation_base.report_donationtaxreceipt_document">
-        <t t-foreach="docs" t-as="o">
             <t t-call="web.internal_layout">
                 <div class="page">
                     <h1>Donation Tax Receipt <span t-field="o.number" /></h1>
@@ -22,14 +21,13 @@
                     <h3>Amount Total: <span t-field="o.amount" /></h3>
                 </div>
             </t>
-        </t>
     </template>
     <template id="report_donationtaxreceipt">
         <t t-call="web.html_container">
-            <t t-foreach="docs" t-as="doc">
+            <t t-foreach="docs" t-as="o">
                 <t
                     t-call="donation_base.report_donationtaxreceipt_document"
-                    t-lang="doc.partner_id.lang"
+                    t-lang="o.partner_id.lang"
                 />
             </t>
         </t>
