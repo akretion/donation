@@ -45,26 +45,26 @@ class AccountBankStatementLine(models.Model):
                 )
             )
 
-    def _get_payment_mode_donation(self):
+    def _get_payment_method_line_donation(self):
         self.ensure_one()
-        payment_mode = self.env["account.payment.method.line"].search(
+        payment_method_line = self.env["account.payment.method.line"].search(
             [
                 ("company_id", "=", self.company_id.id),
                 ("payment_type", "=", "inbound"),
-                # ("bank_account_link", "=", "fixed"),
+                ("donation", '=', True),
                 ("journal_id", "=", self.journal_id.id),
             ],
             limit=1,
         )
-        if not payment_mode:
+        if not payment_method_line:
             raise UserError(
                 _(
                     "Missing inbound payment mode linked to the bank journal '%s' "
-                    "configured with 'Link to Bank Account' set to 'Fixed'."
+                    "available for donations."
                 )
                 % self.journal_id.display_name
             )
-        return payment_mode
+        return payment_method_line
 
     def _get_donation_product(self):
         self.ensure_one()
@@ -85,7 +85,7 @@ class AccountBankStatementLine(models.Model):
             "default_company_id": self.company_id.id,
             "default_partner_id": self.partner_id.id,
             "default_currency_id": self.currency_id.id,
-            "default_payment_method_line_id": self._get_payment_mode_donation().id,
+            "default_payment_method_line_id": self._get_payment_method_line_donation().id,
             "default_payment_ref": self.payment_ref,
             "default_donation_date": self.date,
             "default_bank_statement_line_id": self.id,

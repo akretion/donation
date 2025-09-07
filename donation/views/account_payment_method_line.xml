@@ -25,7 +25,7 @@
         </field>
     </record>
 
-    <!-- <record id="account_payment_mode_search" model="ir.ui.view"> -->
+    <!-- <record id="account_payment_method_line_search" model="ir.ui.view"> -->
     <!--     <field name="model">account.payment.mothod.line</field> -->
     <!-- <field -->
     <!--     name="inherit_id" -->

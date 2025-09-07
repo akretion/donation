@@ -168,7 +168,7 @@
                     <group name="manual">
                         <field name="partner_id" readonly="1" />
                         <field name="commercial_partner_id" invisible="1" />
-                        <field name="payment_method_line_id" readonly="1" />
+                        <field name="payment_method_line_id" domain="[('journal_id', '=', 'bank_statement_line_id.journal_id.id')]"/>
                         <field
                             name="currency_id"
                             groups="base.group_multi_currency"
@@ -365,7 +365,7 @@
                         context="{'group_by': 'currency_id'}"
                     />
                     <filter
-                        name="payment_mode_groupby"
+                        name="payment_method_line_groupby"
                         string="Payment Mode"
                         context="{'group_by': 'payment_method_line_id'}"
                     />
@@ -406,10 +406,12 @@
                 <field name="sequence" widget="handle" />
                 <field
                     name="donation_id"
-                    invisible="not context.get('donation_line_main_view')"
+                    column_invisible="not context.get('donation_line_main_view')"
                 />
                 <field name="product_id" context="{'default_donation': True}" />
+                <field name="name"/>
                 <field name="product_is_donation" optional="hide" />
+                <field name="in_kind" optional="hide" />
                 <field name="quantity" />
                 <field name="unit_price" />
                 <field
@@ -419,10 +421,10 @@
                     options="{'product_field': 'product_id', 'business_domain': 'donation'}"
                 />
                 <field name="amount" />
-                <field name="tax_receipt_ok" string="Tax Receipt" optional="show" />
-                <field name="in_kind" optional="hide" />
-                <field name="currency_id" invisible="1" />
-                <field name="company_id" invisible="1" />
+                <field name="product_tax_receipt_ok" column_invisible="1" />
+                <field name="tax_receipt_ok" string="Tax Receipt" optional="show" readonly="product_tax_receipt_ok == False" />
+                <field name="currency_id" column_invisible="1" />
+                <field name="company_id" column_invisible="1" />
             </list>
         </field>
     </record>
@@ -437,6 +439,7 @@
                         invisible="not context.get('donation_line_main_view')"
                     />
                     <field name="product_id" />
+                    <field name="name"/>
                     <field name="quantity" />
                     <field name="unit_price" />
                     <field
@@ -446,9 +449,10 @@
                         options="{'product_field': 'product_id'}"
                     />
                     <field name="amount" />
-                    <field name="tax_receipt_ok" />
+                    <field name="in_kind"/>
+                    <field name="product_tax_receipt_ok" invisible="1" />
+                    <field name="tax_receipt_ok" readonly="product_tax_receipt_ok == False" />
                     <field name="amount_company_currency" />
-                    <field name="in_kind" />
                     <field name="currency_id" invisible="1" />
                     <field name="company_currency_id" invisible="1" />
                     <field name="company_id" invisible="1" />

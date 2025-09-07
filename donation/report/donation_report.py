@@ -16,7 +16,7 @@ class DonationReport(models.Model):
 
     donation_date = fields.Date(readonly=True)
     product_id = fields.Many2one("product.product", readonly=True)
-    product_is_donation = fields.Selection(related="product_id.is_donation", store=True)
+    product_is_donation = fields.Boolean(related="product_id.is_donation", store=True)
     partner_id = fields.Many2one("res.partner", "Donor", readonly=True)
     country_id = fields.Many2one("res.country", "Partner Country", readonly=True)
     company_id = fields.Many2one("res.company", readonly=True)
@@ -33,7 +33,7 @@ class DonationReport(models.Model):
     thanks_template_id = fields.Many2one(
         "donation.thanks.template", string="Thanks Template", readonly=True
     )
-    in_kind = fields.Boolean()
+    in_kind = fields.Boolean(related="product_id.in_kind", store=True)
     tax_receipt_ok = fields.Boolean("Eligible for a Tax Receipt")
     company_currency_id = fields.Many2one("res.currency", readonly=True)
     amount_company_currency = fields.Monetary(

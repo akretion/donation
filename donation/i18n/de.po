@@ -336,7 +336,7 @@ msgid "Current Donation Campaign"
 msgstr "Aktuelle Spendenkampagne"
 
 #. module: donation
-#: model:ir.model.fields,field_description:donation.field_res_users__context_donation_payment_mode_id
+#: model:ir.model.fields,field_description:donation.field_res_users__context_donation_payment_method_line_id
 msgid "Current Donation Payment Mode"
 msgstr ""
 
@@ -712,9 +712,11 @@ msgstr ""
 #: code:addons/donation/models/account_bank_statement_line.py:0
 #, python-format
 msgid ""
-"Missing inbound payment mode linked to the bank journal '%s' configured with "
-"'Link to Bank Account' set to 'Fixed'."
+"Missing inbound payment mode linked to the bank journal '%s' "
+"and available for donations."
 msgstr ""
+"Fehlender eingehender Zahlungsmodus, der mit dem Bankjournal '%s', "
+"und für Spenden verknüpft ist."
 
 #. module: donation
 #: model:ir.model.fields,field_description:donation.field_donation_donation__my_activity_date_deadline
@@ -807,7 +809,8 @@ msgstr ""
 #, python-format
 msgid ""
 "On the company %(company)s, the Product for Donations via Credit Transfer "
-"(%(product)s) is not a donation product !"
+"(%(product)s) is not a donation product "
+"or is of type In Kind"
 msgstr ""
 
 #. module: donation
@@ -834,8 +837,8 @@ msgid "Partner Country"
 msgstr "Partner Land"
 
 #. module: donation
-#: model:ir.model.fields,field_description:donation.field_donation_donation__payment_mode_id
-#: model:ir.model.fields,field_description:donation.field_donation_report__payment_mode_id
+#: model:ir.model.fields,field_description:donation.field_donation_donation__payment_method_line_id
+#: model:ir.model.fields,field_description:donation.field_donation_report__payment_method_line_id
 #: model_terms:ir.ui.view,arch_db:donation.donation_report_search
 #: model_terms:ir.ui.view,arch_db:donation.donation_search
 msgid "Payment Mode"

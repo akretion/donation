@@ -11,14 +11,8 @@ class ResPartner(models.Model):
 
     @api.depends("donation_ids.partner_id")
     def _compute_donation_count(self):
-        rg_res = self.env["donation.donation"]._read_group(
-            [("partner_id", "in", self.ids), ("state", "=", "done")],
-            ["partner_id"],
-            ["__count"],
-        )
-        mapped_data = {x[0]: x[1] for x in rg_res}
         for partner in self:
-            partner.donation_count = mapped_data.get(partner.id, 0)
+            partner.donation_count = len(partner.donation_ids.ids)
 
     donation_ids = fields.One2many(
         "donation.donation", "partner_id", string="Donations", readonly=True
