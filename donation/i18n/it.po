@@ -727,11 +727,11 @@ msgstr ""
 #: code:addons/donation/models/account_bank_statement_line.py:0
 #, python-format
 msgid ""
-"Missing inbound payment mode linked to the bank journal '%s' configured with"
-" 'Link to Bank Account' set to 'Fixed'."
+"Missing inbound payment mode linked to the bank journal '%s' "
+"available for donations."
 msgstr ""
-"Manca metodo pagamento in ingresso collegato al registro banca '%s' "
-"configurato con 'Collegato a conto bancario' impostato a 'Fisso'."
+"Manca un metodo pagamento in ingresso collegato al registro banca '%s' "
+"e disponibile per le donazioni"
 
 #. module: donation
 #: model:ir.model.fields,field_description:donation.field_donation_donation__my_activity_date_deadline
@@ -831,10 +831,12 @@ msgstr ""
 #, python-format
 msgid ""
 "On the company %(company)s, the Product for Donations via Credit Transfer "
-"(%(product)s) is not a donation product !"
+"(%(product)s) is not a donation product "
+"or is of type In Kind"
 msgstr ""
 "Nell'azienda %(company)s, il prodotto per le donazioni con trasferimento del "
-"credito (%(product)s) non è un prodotto donazione!"
+"credito (%(product)s) non è un prodotto donazione "
+"o è un prodotto donazione in natura"
 
 #. module: donation
 #: model_terms:ir.ui.view,arch_db:donation.donation_form

@@ -20,11 +20,10 @@ class TestDonation(TransactionCase):
                 "name": "test bank journal",
             }
         )
-        self.payment_mode = self.env["account.payment.method.line"].create(
+        self.payment_method_line_id = self.env["account.payment.method.line"].create(
             {
                 "name": "test_payment_mode",
                 "donation": True,
-                # "bank_account_link": "fixed",
                 "journal_id": self.bank_journal.id,
                 "payment_method_id": self.env.ref(
                     "account.account_payment_method_manual_in"

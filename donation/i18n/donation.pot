@@ -705,8 +705,8 @@ msgstr ""
 #: code:addons/donation/models/account_bank_statement_line.py:0
 #, python-format
 msgid ""
-"Missing inbound payment mode linked to the bank journal '%s' configured with"
-" 'Link to Bank Account' set to 'Fixed'."
+"Missing inbound payment mode linked to the bank journal '%s' "
+"and available for donations."
 msgstr ""
 
 #. module: donation
@@ -803,7 +803,8 @@ msgstr ""
 #, python-format
 msgid ""
 "On the company %(company)s, the Product for Donations via Credit Transfer "
-"(%(product)s) is not a donation product !"
+"(%(product)s) is not a donation product "
+"or is of type In Kind"
 msgstr ""
 
 #. module: donation

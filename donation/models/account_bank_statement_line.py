@@ -51,7 +51,7 @@ class AccountBankStatementLine(models.Model):
             [
                 ("company_id", "=", self.company_id.id),
                 ("payment_type", "=", "inbound"),
-                # ("bank_account_link", "=", "fixed"),
+                ("donation", '=', True),
                 ("journal_id", "=", self.journal_id.id),
             ],
             limit=1,
@@ -60,7 +60,7 @@ class AccountBankStatementLine(models.Model):
             raise UserError(
                 _(
                     "Missing inbound payment mode linked to the bank journal '%s' "
-                    "configured with 'Link to Bank Account' set to 'Fixed'."
+                    "available for donations."
                 )
                 % self.journal_id.display_name
             )

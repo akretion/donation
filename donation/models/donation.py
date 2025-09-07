@@ -6,7 +6,7 @@
 import logging
 
 from odoo import _, api, fields, models
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 from odoo.tools.misc import format_amount
 
 logger = logging.getLogger(__name__)
@@ -244,13 +244,21 @@ class DonationDonation(models.Model):
         }
         return vals
 
-    # TODO migration: remove 'journal' argument and
-    # use self.payment_method_line_id.journal_id
+    def _get_payment_debit_account_id(self):
+        account_ref = 'account_journal_payment_debit_account_id'
+        chart_template = self.with_context(allowed_company_ids=self.company_id.root_id.ids).env['account.chart.template']
+        outstanding_account = (
+            chart_template.ref(account_ref, raise_if_not_found=False)
+            or self.company_id.transfer_account_id
+        )
+        if not outstanding_account:
+            raise UserError(_("No outstanding account could be found to make the payment"))
+        return outstanding_account
+    
     def _prepare_counterpart_move_line(
         self, total_company_cur, total_currency, journal
     ):
         self.ensure_one()
-        journal = self.payment_method_line_id.journal_id
         company = journal.company_id
         if self.company_currency_id.compare_amounts(total_company_cur, 0) > 0:
             debit = total_company_cur
@@ -261,23 +269,16 @@ class DonationDonation(models.Model):
         if self.bank_statement_line_id:
             account_id = company.donation_account_id.id
         else:
-            # if not company.account_journal_payment_debit_account_id:
-            #     raise UserError(
-            #         _(
-            #             "Missing Outstanding Receipts Account"
-            #             f"on company '{company.display_name}'."
-            #         )
-            #     )
-            payment_method = self.payment_method_line_id.payment_method_id
-            account_id = (
-                journal.inbound_payment_method_line_ids.filtered(
-                    lambda x: x.payment_method_id == payment_method
-                ).payment_account_id.id
-                or journal.inbound_payment_method_line_ids.filtered(
-                    lambda x: x.payment_method_id == payment_method
-                ).defautl_account_id.id
-                # company.account_journal_payment_debit_account_id.id
-            )
+            company_payment_account_id = self._get_payment_debit_account_id().id
+            if not company_payment_account_id:
+                raise UserError(
+                    _(
+                        "Missing Outstanding Receipts Account"
+                        f"on company '{company.display_name}'."
+                    )
+                )
+            account_id = (self.payment_method_line_id.payment_account_id.id 
+                or company_payment_account_id)
         vals = {
             "debit": debit,
             "credit": credit,
@@ -351,6 +352,7 @@ class DonationDonation(models.Model):
                     {
                         "display_type": "product",
                         "product_id": line.product_id.id,
+                        "name": f"{self.number}: {line.product_id.display_name}",
                         "credit": credit,
                         "debit": debit,
                         "account_id": account.id,
@@ -528,12 +530,10 @@ class DonationDonation(models.Model):
 
     def save_default_values(self):
         self.ensure_one()
-        method_line_id = self.payment_method_line_id
-        compaign_id = self.campaign_id
         self.env.user.write(
             {
-                "context_donation_payment_method_line_id": method_line_id.id,
-                "context_donation_campaign_id": compaign_id.id,
+                "context_donation_payment_method_line_id": self.payment_method_line_id.id,
+                "context_donation_campaign_id": self.campaign_id.id,
             }
         )
 
@@ -617,6 +617,21 @@ class DonationDonation(models.Model):
                 or False
             )
 
+    @api.constrains("line_ids")
+    def _check_tax_receipt_ok_on_donation_line(self):
+        for donation in self:
+            invalid_lines = donation.line_ids.filtered(
+                lambda l: l.tax_receipt_ok and not l.product_id.tax_receipt_ok
+            )
+            if invalid_lines:
+                raise ValidationError(_(
+                    "The following donation lines are not eligible for a tax receipt:\n%s"
+                ) % "\n".join(
+                    f"- {line.donation_id.number or _('(No Donation Ref)')}: "
+                    f"{line.product_id.display_name} ({line.quantity} {line.product_id.uom_name})"
+                    for line in invalid_lines
+                ))
+        
     @api.onchange("tax_receipt_option")
     def tax_receipt_option_change(self):
         res = {}
@@ -671,12 +686,21 @@ class DonationLine(models.Model):
     product_id = fields.Many2one(
         "product.product",
         required=True,
-        domain=[("is_donation", "!=", False)],
+        domain=[("is_donation", "=", True)],
         ondelete="restrict",
         check_company=True,
     )
-    product_is_donation = fields.Selection(
+    name = fields.Text(
+        string='Description',
+        store=True, 
+        readonly=False,
+        tracking=True,
+    )
+    product_is_donation = fields.Boolean(
         related="product_id.is_donation", store=True, string="Product Type donation"
+    )
+    in_kind = fields.Boolean(
+        related="product_id.in_kind", store=True, string="Donation Product Type In Kind"
     )
     quantity = fields.Integer(default=1)
     unit_price = fields.Monetary(currency_field="currency_id")
@@ -698,28 +722,19 @@ class DonationLine(models.Model):
         store=True,
     )
     sequence = fields.Integer()
-    # for the fields tax_receipt_ok and in_kind, we made an important change
-    # between v8 and v9: in v8, it was a reglar field set by an onchange
-    # in v9, it is a related stored field
+    product_tax_receipt_ok = fields.Boolean(
+        related="product_id.tax_receipt_ok", store="True", string="Donation Product is eligible to tax receipt"
+    )
     tax_receipt_ok = fields.Boolean(
-        related="product_id.tax_receipt_ok",
-        store=True,
-    )
-    in_kind = fields.Boolean(
-        compute="_compute_in_kind",
+        compute="_compute_tax_receipt_ok",
         store=True,
     )
 
-    @api.depends("product_id")
-    def _compute_in_kind(self):
+    @api.depends("product_tax_receipt_ok")
+    def _compute_tax_receipt_ok(self):
         for line in self:
-            in_kind = False
-            if line.product_id.is_donation and line.product_id.is_donation.startswith(
-                "donation_in_kind"
-            ):
-                in_kind = True
-            line.in_kind = in_kind
-
+            line.tax_receipt_ok = line.product_tax_receipt_ok
+   
     @api.depends(
         "unit_price",
         "quantity",
