@@ -41,7 +41,7 @@ class ProductTemplate(models.Model):
         for product in self:
             if not product.is_donation:
                 product.in_kind = False
-            elif product.type in ["consu", "combo"]:
+            elif product.is_donation and product.type in ["consu", "combo"]:
                 product.in_kind = True
 
     @api.depends("is_donation")
@@ -52,19 +52,18 @@ class ProductTemplate(models.Model):
 
     @api.onchange("is_donation")
     def _donation_change(self):
-        for product in self:
-            if product.is_donation:
-                product.taxes_id = False
-                product.supplier_taxes_id = False
-                product.purchase_ok = False
-                product.sale_ok = False
-                if "can_be_expensed" in product._fields:
-                    product.can_be_expensed = False
-                    
+        if self.is_donation:
+            self.taxes_id = False
+            self.supplier_taxes_id = False
+            self.purchase_ok = False
+            self.sale_ok = False
+            if "can_be_expensed" in self._fields:
+                self.can_be_expensed = False
+
     @api.constrains("type", "in_kind")
     def inkind_check(self):
         for product in self:
-            if product.type in ["consu", "combo"] and product.in_kind == False:
+            if product.is_donation and product.type in ["consu", "combo"] and product.in_kind == False:
                 raise ValidationError(
                     _(
                         "A donation product of type '%s' "
@@ -72,23 +71,24 @@ class ProductTemplate(models.Model):
                     )
                     % product.type
                 )
-    @api.constrains("is_donation", "taxes_id")
-    def donation_check(self):
-        for product in self:
-            # The check below is to make sure that we don't forget to remove
-            # the default sale VAT tax on the donation product, particularly
-            # for users of donation_sale. If there are countries that have
-            # sale tax on donations (!), please tell us and we can remove this
-            # constraint
-            if product.is_donation and product.taxes_id:
-                raise ValidationError(
-                    _(
-                        "There shouldn't have any Customer Taxes on the "
-                        "donation product '%s'."
-                    )
-                    % product.display_name
-                )
-
+            
+    # @api.constrains("is_donation", "taxes_id")
+    # def donation_check(self):
+    #     for product in self:
+    #         # The check below is to make sure that we don't forget to remove
+    #         # the default sale VAT tax on the donation product, particularly
+    #         # for users of donation_sale. If there are countries that have
+    #         # sale tax on donations (!), please tell us and we can remove this
+    #         # constraint
+    #         _logger.debug(f"in donation constrains, len taxes_id: {len(product.taxes_id)}")
+    #         if product.is_donation and len(product.taxes_id) > 0:
+    #             raise ValidationError(
+    #                 _(
+    #                     "There shouldn't have any Customer Taxes on the "
+    #                     "donation product '%s'."
+    #                 )
+    #                 % product.display_name
+    #             )
 
 class ProductProduct(models.Model):
     _inherit = "product.product"
