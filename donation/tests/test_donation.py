@@ -22,7 +22,7 @@ class TestDonation(TransactionCase):
         )
         self.payment_method_line_id = self.env["account.payment.method.line"].create(
             {
-                "name": "test_payment_mode",
+                "name": "test_payment_method_line",
                 "donation": True,
                 "journal_id": self.bank_journal.id,
                 "payment_method_id": self.env.ref(
@@ -45,7 +45,7 @@ class TestDonation(TransactionCase):
                 "check_total": 100,
                 "partner_id": self.donor1.id,
                 "donation_date": today,
-                "payment_method_line_id": self.payment_mode.id,
+                "payment_method_line_id": self.payment_method_line.id,
                 "tax_receipt_option": "each",
                 "line_ids": [
                     (
@@ -65,7 +65,7 @@ class TestDonation(TransactionCase):
                 "check_total": 120,
                 "partner_id": self.donor2.id,
                 "donation_date": today,
-                "payment_method_line_id": self.payment_mode.id,
+                "payment_method_line_id": self.payment_method_line.id,
                 "tax_receipt_option": "annual",
                 "line_ids": [
                     (
@@ -85,7 +85,7 @@ class TestDonation(TransactionCase):
                 "check_total": 150,
                 "partner_id": self.donor3.id,
                 "donation_date": today,
-                "payment_method_line_id": self.payment_mode.id,
+                "payment_method_line_id": self.payment_method_line.id,
                 "tax_receipt_option": "none",
                 "line_ids": [
                     (
@@ -105,7 +105,7 @@ class TestDonation(TransactionCase):
                 "check_total": 1000,
                 "partner_id": self.donor1.id,
                 "donation_date": today,
-                "payment_method_line_id": self.payment_mode.id,
+                "payment_method_line_id": self.payment_method_line.id,
                 "tax_receipt_option": "each",
                 "line_ids": [
                     (
@@ -125,7 +125,7 @@ class TestDonation(TransactionCase):
                 "check_total": 1200,
                 "partner_id": self.donor1.id,
                 "donation_date": today,
-                "payment_method_line_id": self.payment_mode.id,
+                "payment_method_line_id": self.payment_method_line.id,
                 "tax_receipt_option": "each",
                 "line_ids": [
                     (
@@ -180,7 +180,7 @@ class TestDonation(TransactionCase):
                 "check_total": 1000,
                 "partner_id": self.donor1.id,
                 "donation_date": time.strftime("%Y-%m-%d"),
-                "payment_method_line_id": self.payment_mode.id,
+                "payment_method_line_id": self.payment_method_line.id,
                 "tax_receipt_option": "each",
                 "line_ids": [
                     (
@@ -262,7 +262,7 @@ class TestDonation(TransactionCase):
                 "check_total": 1000,
                 "partner_id": self.donor1.id,
                 "donation_date": time.strftime("%Y-%m-%d"),
-                "payment_method_line_id": self.payment_mode.id,
+                "payment_method_line_id": self.payment_method_line.id,
                 "tax_receipt_option": "each",
                 "line_ids": [
                     (
@@ -298,7 +298,7 @@ class TestDonation(TransactionCase):
     ):
         donation = self.ddo.create(
             {
-                "payment_method_line_id": self.payment_mode.id,
+                "payment_method_line_id": self.payment_method_line.id,
                 "partner_id": partner.id,
                 "tax_receipt_option": "annual",
                 "donation_date": time.strftime("%Y-01-01"),

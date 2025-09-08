@@ -66,7 +66,7 @@
                         context="{'group_by': 'campaign_id'}"
                     />
                     <filter
-                        name="payment_mode_groupby"
+                        name="payment_method_line_groupby"
                         string="Payment Mode"
                         context="{'group_by': 'payment_method_line_id'}"
                     />

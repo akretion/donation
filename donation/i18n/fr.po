@@ -333,7 +333,7 @@ msgid "Current Donation Campaign"
 msgstr "Campagne de don courante"
 
 #. module: donation
-#: model:ir.model.fields,field_description:donation.field_res_users__context_donation_payment_mode_id
+#: model:ir.model.fields,field_description:donation.field_res_users__context_donation_payment_method_line_id
 msgid "Current Donation Payment Mode"
 msgstr ""
 
@@ -834,8 +834,8 @@ msgid "Partner Country"
 msgstr "Pays du partenaire"
 
 #. module: donation
-#: model:ir.model.fields,field_description:donation.field_donation_donation__payment_mode_id
-#: model:ir.model.fields,field_description:donation.field_donation_report__payment_mode_id
+#: model:ir.model.fields,field_description:donation.field_donation_donation__payment_method_line_id
+#: model:ir.model.fields,field_description:donation.field_donation_report__payment_method_line_id
 #: model_terms:ir.ui.view,arch_db:donation.donation_report_search
 #: model_terms:ir.ui.view,arch_db:donation.donation_search
 msgid "Payment Mode"
